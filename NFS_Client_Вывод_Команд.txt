@@ -1,0 +1,26 @@
+$ vagrant ssh nfsc
+Last login: Tue Apr 16 09:59:16 2024 from 10.0.2.2
+[vagrant@nfsc ~]$ sudo -i
+[root@nfsc ~]# echo "192.168.60.10:/srv/share/ /mnt nfs vers=3,proto=udp,noauto,x-systemd.automount 0
+> 0" >> /etc/fstab
+[root@nfsc ~]# systemctl enable firewalld --now
+Created symlink from /etc/systemd/system/dbus-org.fedoraproject.FirewallD1.service to /usr/lib/systemd/system/firewalld.service.
+Created symlink from /etc/systemd/system/multi-user.target.wants/firewalld.service to /usr/lib/systemd/system/firewalld.service.
+[root@nfsc ~]# systemctl status firewalld
+● firewalld.service - firewalld - dynamic firewall daemon
+   Loaded: loaded (/usr/lib/systemd/system/firewalld.service; enabled; vendor preset: enabled)
+   Active: active (running) since Tue 2024-04-16 11:11:45 UTC; 6s ago
+     Docs: man:firewalld(1)
+ Main PID: 22425 (firewalld)
+   CGroup: /system.slice/firewalld.service
+           └─22425 /usr/bin/python2 -Es /usr/sbin/firewalld --nofork --nopid
+
+Apr 16 11:11:43 nfsc systemd[1]: Starting firewalld - dynamic firewall daemon...
+Apr 16 11:11:45 nfsc systemd[1]: Started firewalld - dynamic firewall daemon.
+Apr 16 11:11:45 nfsc firewalld[22425]: WARNING: AllowZoneDrifting is enabled. This is considered an insecure configuration option. It... it now.
+Hint: Some lines were ellipsized, use -l to show in full.
+[root@nfsc ~]# systemctl daemon-reload
+[root@nfsc ~]# systemctl restart remote-fs.target
+[root@nfsc ~]# mount | grep mnt
+systemd-1 on /mnt type autofs (rw,relatime,fd=46,pgrp=1,timeout=0,minproto=5,maxproto=5,direct,pipe_ino=48466)
+[root@nfsc ~]#
